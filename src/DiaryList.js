@@ -1,6 +1,9 @@
+import { useContext } from "react";
+import { DiaryStateContext } from "./App";
 import DiaryItem from "./DiaryItem";
 
-const DiaryList = ({ onEdit, onRemove, diaryList }) => {
+const DiaryList = () => {
+  const diaryList = useContext(DiaryStateContext);
   console.log(diaryList);
   return (
     <div className="DiaryList">
@@ -8,13 +11,7 @@ const DiaryList = ({ onEdit, onRemove, diaryList }) => {
       <h4>{diaryList.length}개의 일기가 있습니다.</h4>
       <div>
         {diaryList.map((it) => (
-          <DiaryItem key={it.id} {...it} onEdit={onEdit} onRemove={onRemove} />
-          //   <div key={it.id}>
-          //     <div>작성자 : {it.author}</div>
-          //     <div>일기 : {it.content}</div>
-          //     <div>감정 : {it.emotion}</div>
-          //     <div>작성시간 : {it.create_date}</div>
-          //   </div>
+          <DiaryItem key={it.id} {...it} />
         ))}
       </div>
     </div>

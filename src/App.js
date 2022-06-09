@@ -1,33 +1,8 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-// import OptimizeTest from "./OptimizeTest";
-// import Lifecycle from "./Lifecycle";
 
-// const dummyList = [
-// {
-//   id: 1,
-//   author: "심아윤",
-//   content: "하이1",
-//   emotion: 5,
-//   create_date: new Date().getTime(), // Date(): 현재시간
-// },
-// {
-//   id: 2,
-//   author: "심아윤",
-//   content: "하이2",
-//   emotion: 2,
-//   create_date: new Date().getTime(), // Date(): 현재시간
-// },
-// {
-//   id: 3,
-//   author: "심아윤",
-//   content: "하이3",
-//   emotion: 3,
-//   create_date: new Date().getTime(), // Date(): 현재시간
-// },
-// ];
 const reducer = (state, action) => {
   switch (action.type) {
     case "INIT": {
@@ -52,9 +27,10 @@ const reducer = (state, action) => {
   }
 };
 
-function App() {
-  // const [data, setData] = useState([]);
+export const DiaryStateContext = React.createContext(); // default는 하나만 export는 부가적으로 가능
+export const DiaryDispatchContext = React.createContext();
 
+function App() {
   const [data, dispatch] = useReducer(reducer, []);
 
   const dataId = useRef(0);
@@ -104,21 +80,18 @@ function App() {
 
   const onRemove = useCallback((targetId) => {
     dispatch({ type: "REMOVE", targetId });
-    // console.log(`${targetId}가 삭제되었습니다`);
-    // 아래 두줄을 최적화 하기 위해 위 setData처럼 함수형으로 바꿈
-    // const newDiaryList = data.filter((it) => it.id !== targetId);
-    // setData(newDiaryList);
-    // setData((data) => data.filter((it) => it.id !== targetId));
   }, []);
 
   const onEdit = useCallback((targetId, newContent) => {
     dispatch({ type: "EDIT", targetId, newContent });
-    // setData((data) => data.map((it) => (it.id === targetId ? { ...it, content: newContent } : it)));
   }, []); // 최적화
+
+  const memoizedDispatches = useMemo(() => {
+    return { onCreate, onEdit, onRemove };
+  }, []);
 
   const getDiaryAnalysis = useMemo(() => {
     // useMemo : 메모이제이션 vs React.memo : 불필요한 리렌더링 방지
-    // console.log("일기 분석 시작");
     const goodCount = data.filter((it) => it.emotion >= 3).length;
     const badCount = data.length - goodCount;
     const goodRatio = (goodCount / data.length) * 100;
@@ -128,16 +101,19 @@ function App() {
   const { goodCount, badCount, goodRatio } = getDiaryAnalysis; // useMemo()로 부터 값을 리턴받는 것임.
 
   return (
-    <div className="App">
-      {/* <OptimizeTest /> */}
-      {/* <Lifecycle /> */}
-      <DiaryEditor onCreate={onCreate} />
-      <div>전체 일기 : {data.length}</div>
-      <div>기분 좋은 일기 개수 : {data.length}</div>
-      <div>기분 나쁜 일기 개수 : {data.length}</div>
-      <div>기분 좋은 일기 비율 : {data.length}</div>
-      <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data} />
-    </div>
+    // value값은 언제든지 가져다 사용가능
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={memoizedDispatches}>
+        <div className="App">
+          <DiaryEditor />
+          <div>전체 일기 : {data.length}</div>
+          <div>기분 좋은 일기 개수 : {data.length}</div>
+          <div>기분 나쁜 일기 개수 : {data.length}</div>
+          <div>기분 좋은 일기 비율 : {data.length}</div>
+          <DiaryList />
+        </div>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 

@@ -1,19 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-// const Textview = React.memo(({ text }) => {
-//   useEffect(() => {
-//     console.log(`Update :: Text : ${text}`);
-//   });
-//   return <div>{text}</div>;
-// });
-
-// const CountView = React.memo(({ count }) => {
-//   useEffect(() => {
-//     console.log(`Update :: Count : ${count}`);
-//   });
-//   return <div>{count}</div>;
-// });
-
 const CounterA = React.memo(({ count }) => {
   useEffect(() => {
     console.log(`CounterA Update - count ${count}`);
@@ -40,9 +26,6 @@ const areEqual = (prevProps, nextProps) => {
 const MemoizedCounterB = React.memo(CounterB, areEqual);
 
 const OptimizeTest = () => {
-  //   const [count, setCount] = useState(1);
-  //   const [text, setText] = useState("");
-
   const [count, setCount] = useState(1);
   const [obj, setObj] = useState({
     count: 1,
@@ -50,16 +33,6 @@ const OptimizeTest = () => {
 
   return (
     <div style={{ padding: 50 }}>
-      {/* <div>
-        <h2>count</h2>
-        <CountView count={count} />
-        <button onClick={() => setCount(count + 1)}>+</button>
-      </div>
-      <div>
-        <h2>text</h2>
-        <Textview text={text} />
-        <input value={text} onChange={(e) => setText(e.target.value)} />
-      </div> */}
       <div>
         <h2>Counter A</h2>
         <CounterA count={count} />

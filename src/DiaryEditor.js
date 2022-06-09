@@ -1,16 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { DiaryDispatchContext } from "./App";
 
-const DiaryEditor = ({ onCreate }) => {
-  useEffect(() => {
-    console.log("DiaryEditor 렌더");
-  });
+const DiaryEditor = () => {
+  const { onCreate } = useContext(DiaryDispatchContext);
 
   const authorInput = useRef(); // focus
   const contentInput = useRef();
 
   // state/setState로 묶어서 관리할 수 있음.
-  // const [author, setAuthor] = useState("");
-  // const [content, setContent] = useState("");
   const [state, setState] = useState({
     author: "",
     content: "",
@@ -60,9 +57,6 @@ const DiaryEditor = ({ onCreate }) => {
           value={state.author}
           onChange={handleChangeState}
           // onChange={(e) => {
-          //     console.log(e);
-          //     console.log(e.target.name);
-          //     console.log(e.target.value);
           //     setState({
           //         ...state, // 원래 값을 유지하도록 - 인자가 많으면 힘드니 이렇게! -> 순서 중요 제일 먼저!
           //         // author: state.author, // 원래 값을 유지함
@@ -72,19 +66,7 @@ const DiaryEditor = ({ onCreate }) => {
         />
       </div>
       <div>
-        <textarea
-          ref={contentInput}
-          name="content"
-          value={state.content}
-          onChange={handleChangeState}
-          // onChange={(e) => {
-          //     setState({
-          //         ...state,
-          //         author: e.target.value,
-          //         // content: state.content,
-          //     });
-          // }}
-        />
+        <textarea ref={contentInput} name="content" value={state.content} onChange={handleChangeState} />
       </div>
       <div>
         <select name="emotion" value={state.emotion} onChange={handleChangeState}>
