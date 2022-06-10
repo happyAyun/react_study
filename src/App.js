@@ -27,11 +27,11 @@ const reducer = (state, action) => {
   }
 };
 
-export const DiaryStateContext = React.createContext(); // default는 하나만 export는 부가적으로 가능
+export const DiaryStateContext = React.createContext(); // export default는 하나만 export는 부가적으로 가능
 export const DiaryDispatchContext = React.createContext();
 
 function App() {
-  const [data, dispatch] = useReducer(reducer, []);
+  const [data, dispatch] = useReducer(reducer, []); // [] : 초기 data
 
   const dataId = useRef(0);
 
@@ -75,8 +75,7 @@ function App() {
     dataId.current += 1;
     // setData((data) => [newItem, ...data]); // 새로작성한 item이 가장 먼저 들어가도록
   }, []); // [] 이므로 가장 마지막 data는 [] (빈배열)이 되므로 data가 하나만 들어가게 된다.
-  // 따라서 setData()는 값 뿐아니라 함수형 인자도 가능하므로 data를 인자로 받아 항상 최신의 data를 참고할 수 있도록 한다.
-  // 최신의 data에 newItem을 새로 추가한다
+  // 따라서 setData()는 값뿐 아니라 함수형 인자도 가능하므로 data를 인자로 받아 항상 최신의 data를 참고해 newItem을 새로 추가할 수 있게 한다
 
   const onRemove = useCallback((targetId) => {
     dispatch({ type: "REMOVE", targetId });
